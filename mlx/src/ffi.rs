@@ -34,6 +34,17 @@ pub fn init() -> Result<*mut c_void, MlxError> {
     }
 }
 
+pub fn destroy(mlx_ptr: *mut c_void) {
+    extern "C" {
+        pub fn mlx_destroy_display(mlx_ptr: *mut c_void) -> i32;
+    }
+
+    unsafe {
+        mlx_destroy_display(mlx_ptr);
+        libc::free(mlx_ptr);
+    }
+}
+
 pub fn new_window(
     mlx_ptr: *mut c_void,
     size_x: i32,

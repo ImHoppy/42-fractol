@@ -237,6 +237,13 @@ impl Mlx {
     pub fn event_loop(&self) {
         ffi::event_loop(self.mlx_ptr);
     }
+
+    /// Destroys the Mlx instance.
+    ///
+    /// This function also drops free the Mlx instance.
+    pub fn destroy(&self) {
+        ffi::destroy(self.mlx_ptr);
+    }
 }
 
 /// Hook api holder. Needed in most [Mlx](struct.Mlx.html) methods.
