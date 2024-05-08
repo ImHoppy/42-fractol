@@ -1,13 +1,17 @@
 use mlx::{Mlx, MlxError};
+use num_complex::Complex;
 use std::process;
+
+const MAX_ITERATIONS: u32 = 256;
+const JULIA_CONSTANT: Complex<f64> = Complex::new(-0.7, 0.27015);
 
 fn julia(x: i32, y: i32, image: &mlx::MlxImage) -> u32 {
     let mut zx = 1.5 * (x as f64 - image.width as f64 / 2.0) / (0.5 * image.width as f64);
     let mut zy = (y as f64 - image.height as f64 / 2.0) / (0.5 * image.height as f64);
-    let mut i = 255;
+    let mut i = MAX_ITERATIONS;
     while zx * zx + zy * zy < 4.0 && i > 1 {
-        let xtemp = zx * zx - zy * zy + 0.285;
-        zy = 2.0 * zx * zy + 0.01;
+        let xtemp = zx * zx - zy * zy + JULIA_CONSTANT.re;
+        zy = 2.0 * zx * zy + JULIA_CONSTANT.im;
         zx = xtemp;
         i -= 1;
     }

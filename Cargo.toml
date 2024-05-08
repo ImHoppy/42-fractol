@@ -6,3 +6,4 @@ edition = "2021"
 
 [dependencies]
 mlx = { path = "./mlx" }
+num-complex = "0.4.6"
