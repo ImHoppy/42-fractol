@@ -2,20 +2,32 @@ use mlx::{Mlx, MlxError};
 use num_complex::Complex;
 use std::process;
 
-const MAX_ITERATIONS: u32 = 256;
-const JULIA_CONSTANT: Complex<f64> = Complex::new(-0.7, 0.27015);
+const MAX_ITERATIONS: u32 = 110;
+const JULIA_CONSTANT: Complex<f32> = Complex::new(-0.9, 0.27015);
 
 fn julia(x: i32, y: i32, image: &mlx::MlxImage) -> u32 {
-    let mut zx = 1.5 * (x as f64 - image.width as f64 / 2.0) / (0.5 * image.width as f64);
-    let mut zy = (y as f64 - image.height as f64 / 2.0) / (0.5 * image.height as f64);
+    let inner_height = image.height as f32;
+    let inner_width = image.width as f32;
+    let inner_y = y as f32;
+    let inner_x = x as f32;
+
+    let mut zx = 3.0 * (inner_x - 0.5 * inner_width) / (inner_width);
+    let mut zy = 2.0 * (inner_y - 0.5 * inner_height) / (inner_height);
+
     let mut i = MAX_ITERATIONS;
+
     while zx * zx + zy * zy < 4.0 && i > 1 {
-        let xtemp = zx * zx - zy * zy + JULIA_CONSTANT.re;
+        let tmp = zx * zx - zy * zy + JULIA_CONSTANT.re;
         zy = 2.0 * zx * zy + JULIA_CONSTANT.im;
-        zx = xtemp;
+        zx = tmp;
         i -= 1;
     }
-    i
+
+    let r = (i << 3) as u8;
+    let g = (i << 5) as u8;
+    let b = (i * 4) as u8;
+    let color = (r as u32) << 16 | (g as u32) << 8 | b as u32;
+    color
 }
 
 fn main() {
