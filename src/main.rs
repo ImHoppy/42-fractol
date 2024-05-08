@@ -1,6 +1,5 @@
-
-use std::process;
 use mlx::{Mlx, MlxError};
+use std::process;
 
 fn main() {
     let mlx = Mlx::new().unwrap();
@@ -37,9 +36,10 @@ fn main() {
                 let color = 0xff0000;
                 for i in 0..100 {
                     for j in 0..100 {
-                        mlx.pixel_put(&window, x + i, y + j, color);
+                        image.pixel_put(x + i, y + j, color);
                     }
                 }
+                mlx.put_image_to_window(&window, &image, 0, 0);
             }
         },
         &(),

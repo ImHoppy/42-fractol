@@ -422,4 +422,21 @@ impl MlxImage {
             *self.area_start.offset(offset as isize) = value as i8;
         }
     }
+
+    /// Reads from the image from offset of the beginning of the area where the image is stored.
+    pub fn read_from(&self, offset: i32) -> u8 {
+        unsafe { *self.area_start.offset(offset as isize) as u8 }
+    }
+
+    /// Writes a pixel to the image.
+    pub fn pixel_put(&self, x: i32, y: i32, color: u32) {
+        let offset = (y * self.size_line + x * self.bits_per_pixel / 8) as i32;
+        let color = color.to_ne_bytes();
+        if offset < 0 || offset >= self.size_line * self.height {
+            return;
+        }
+        for i in 0..(self.bits_per_pixel / 8) {
+            self.write_to(offset + i, color[i as usize]);
+        }
+    }
 }
