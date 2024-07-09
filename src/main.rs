@@ -37,19 +37,19 @@ fn main() {
     let height = 720;
     let window = mlx.new_window(width, height, "Fractol").unwrap();
 
-    let image = match mlx.new_image(width, height) {
-        Ok(img) => img,
-        Err(e) => match e {
-            MlxError::Any(s) => return println!("{}", s),
-            _ => return,
-        },
-    };
+    let image = mlx.new_image(width, height).unwrap();
 
     println!("{}, {}", image.size_line, image.bits_per_pixel);
 
-    window.loop_hook(
+    mlx.loop_hook(
         move |_| {
-            println!("loop");
+            for y in 0..height {
+                for x in 0..width {
+                    let color = julia(x, y, &image);
+                    image.pixel_put(x, y, color);
+                }
+            }
+            mlx.put_image_to_window(&window, &image, 0, 0);
         },
         &(),
     );
@@ -65,15 +65,6 @@ fn main() {
                 mlx.destroy_window(&window);
                 mlx.destroy();
                 process::exit(0);
-            // Enter
-            } else if keycode == 65293 {
-                for y in 0..height {
-                    for x in 0..width {
-                        let color = julia(x, y, &image);
-                        image.pixel_put(x, y, color);
-                    }
-                }
-                mlx.put_image_to_window(&window, &image, 0, 0);
             }
         },
         &(),

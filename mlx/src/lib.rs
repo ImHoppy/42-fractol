@@ -238,6 +238,26 @@ impl Mlx {
         ffi::event_loop(self.mlx_ptr);
     }
 
+    /// Hook running when no event occurs.
+    ///
+    /// F should be a closure taking the data you pass as an argument.
+    ///
+    /// Usage:
+    /// ```
+    /// let arg = (2, 3);
+    /// mlx.loop_hook(|args| {
+    ///     println!("({}, {})", args.0, args.1);
+    /// }, &arg);
+    /// ```
+    pub fn loop_hook<F, Args>(&self, mut cb: F, args: &'static Args)
+    where
+        F: FnMut(&'static Args) + 'static,
+    {
+        ffi::loop_hook(self.mlx_ptr, move || {
+            cb(args);
+        });
+    }
+
     /// Destroys the Mlx instance.
     ///
     /// This function also drops free the Mlx instance.
@@ -315,26 +335,6 @@ impl MlxWindow {
         F: FnMut(&'static Args) + 'static,
     {
         ffi::expose_hook(self.win_ptr, move || {
-            cb(args);
-        });
-    }
-
-    /// Hook running when no event occurs.
-    ///
-    /// F should be a closure taking the data you pass as an argument.
-    ///
-    /// Usage:
-    /// ```
-    /// let arg = (2, 3);
-    /// window.loop_hook(|args| {
-    ///     println!("({}, {})", args.0, args.1);
-    /// }, &arg);
-    /// ```
-    pub fn loop_hook<F, Args>(&self, mut cb: F, args: &'static Args)
-    where
-        F: FnMut(&'static Args) + 'static,
-    {
-        ffi::loop_hook(self.win_ptr, move || {
             cb(args);
         });
     }

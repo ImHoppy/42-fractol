@@ -441,13 +441,13 @@ where
     }
 }
 
-pub fn loop_hook<F>(win_ptr: *mut c_void, cb: F)
+pub fn loop_hook<F>(mlx_ptr: *mut c_void, cb: F)
 where
     F: FnMut() + 'static,
 {
     extern "C" {
         fn mlx_loop_hook(
-            win_ptr: *mut c_void,
+            mlx_ptr: *mut c_void,
             func_ptr: unsafe extern "C" fn(*mut c_void),
             param: *mut c_void,
         ) -> i32;
@@ -464,7 +464,7 @@ where
 
     let callback = Box::into_raw(Box::new(cb));
     unsafe {
-        mlx_loop_hook(win_ptr, call_closure::<F>, callback as *mut c_void);
+        mlx_loop_hook(mlx_ptr, call_closure::<F>, callback as *mut c_void);
     }
 }
 
