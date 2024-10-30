@@ -54,13 +54,21 @@ fn main() {
         &(),
     );
 
+    // DestroyNotify
+    window.hook(17, 0, move |_| {
+        mlx.destroy_image(&image);
+        mlx.destroy_window(&window);
+        mlx.destroy();
+        process::exit(0);
+    }, &());
+
     window.key_hook(
         move |keycode, _| {
             // you can also check keycodes using the `xev` command
             println!("{}", keycode);
 
-            // `q`
-            if keycode == 113 {
+            // `q` or `esc`
+            if keycode == 113 || keycode == 65307 {
                 mlx.destroy_image(&image);
                 mlx.destroy_window(&window);
                 mlx.destroy();
