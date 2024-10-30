@@ -4,6 +4,7 @@ fn main() {
     let status = Command::new("make")
         .current_dir("../minilibx")
         .arg("all")
+        .env("CFLAGS", "-fPIC")
         .status()
         .expect("Failed to execute make command");
 
